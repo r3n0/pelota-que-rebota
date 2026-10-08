@@ -3,8 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pelota que rebota</title>
+    <title>Pelotita Loca</title>
+    <style>
+        /* Reset: quita el margen por defecto del body y el hueco inline del canvas,
+           así no queda un borde blanco alrededor de la pantalla. */
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+    <script>
+        // Firefox y Safari no implementan AudioParam.cancelAndHoldAtTime().
+        // Tone.js (el motor de p5.sound) lo llama en amp()/freq(), y sin este
+        // polyfill tira "this._param.cancelAndHoldAtTime is not a function".
+        // Fallback recomendado por MDN; debe correr antes de p5.sound.
+        if (typeof AudioParam !== "undefined" && !AudioParam.prototype.cancelAndHoldAtTime) {
+            AudioParam.prototype.cancelAndHoldAtTime = function (cancelTime) {
+                const value = this.value;
+                this.cancelScheduledValues(cancelTime);
+                this.setValueAtTime(value, cancelTime);
+            };
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/p5@2.3.3/lib/p5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/p5.sound@0.4.1/dist/p5.sound.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/matter-js@0.20.0/build/matter.min.js"></script>
     <script src="sketch.js"></script>
 </head>
 <body>
